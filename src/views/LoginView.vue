@@ -1,8 +1,27 @@
 <script setup lang="ts">
+import { fakeSendSuccess } from '@/lib/fakeSendSucess'
 import { IconEye, IconEyeOff, IconLoader2, IconLock, IconMail } from '@tabler/icons-vue'
 import { ref } from 'vue'
 const isLoading = ref(false)
 const isVisiblePassword = ref(false)
+const email = ref('')
+const pass = ref('')
+
+async function login() {
+  isLoading.value = true
+  if (email.value !== 'usuario@email.com' || pass.value !== '123456') {
+    alert('Usuário ou senha incorreto!')
+    isLoading.value = false
+    return
+  }
+  await fakeSendSuccess('Autenticado com sucesso', 3000)
+  alert('Autenticado com sucesso')
+  isLoading.value = false
+  return
+  // const response = await fetch('https://jsonplaceholder.org/users')
+  // const users = await response.json()
+  // console.log(users)
+}
 </script>
 
 <template>
@@ -10,7 +29,6 @@ const isVisiblePassword = ref(false)
     class="shadow-lg ring-1 ring-black/5 bg-white rounded-lg px-6 py-12 sm:p-12 sm:mx-auto w-full sm:max-w-md"
   >
     <div class="space-y-6">
-      {{ isLoading }}
       <div>
         <label for="email" class="block text-sm/6 font-medium text-gray-900">E-mail</label>
         <div class="mt-2">
@@ -21,6 +39,7 @@ const isVisiblePassword = ref(false)
               <IconMail />
             </div>
             <input
+              v-model="email"
               type="email"
               name="email"
               id="email"
@@ -53,6 +72,7 @@ const isVisiblePassword = ref(false)
             </div>
             <!-- TODO: adicionar logica para visualizar a senha/esconder senha :type="isVisiblePassword ? 'text' : 'password'" -->
             <input
+              v-model="pass"
               :type="isVisiblePassword ? 'text' : 'password'"
               name="password"
               id="password"
@@ -79,7 +99,7 @@ const isVisiblePassword = ref(false)
           type="submit"
           id="btn-submit"
           class="font-semibold inline-flex items-center justify-center py-1.5 sm:py-1.5 px-3.5 sm:px-4 transition-all duration-200 text-center cursor-pointer bg-green-600 hover:bg-green-500 text-white shadow-xs rounded-md text-sm sm:text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 w-full"
-          @click="isLoading = !isLoading"
+          @click="login()"
         >
           <IconLoader2 class="animate-spin" v-if="isLoading" />
           <span v-else>Entrar</span>
