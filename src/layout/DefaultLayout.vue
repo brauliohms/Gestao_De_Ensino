@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SideBar from '@/components/SideBar.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -8,7 +9,7 @@ import SideBar from '@/components/SideBar.vue'
     <SideBar />
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <!-- Conteúdo principal da aplicação -->
-      <slot />
+      <RouterView />
     </main>
   </div>
 </template>
