@@ -2,12 +2,14 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
 
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -22,23 +24,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test:unit
+      - name: Run linting
+        run: npm run lint:check
+
+      - name: Check formatting
+        run: npm run format:check
 
       - name: Run TypeScript type checking
         run: npm run type-check
 
-      - name: Run ESLint and fix
-        run: npm run lint
+      - name: Run unit tests
+        run: npm run test:unit
 
-      - name: Format with Prettier
-        run: npm run format
-
-      - name: Check for remaining ESLint errors
-        run: npm run lint:check
-
-      - name: Check for remaining formatting issues
-        run: npm run format:check
-
-      - name: Run build-only project
+      - name: Build project
         run: npm run build-only
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
