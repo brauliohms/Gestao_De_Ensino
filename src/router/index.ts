@@ -1,8 +1,9 @@
 import DefaultLayout from '@/layout/DefaultLayout.vue'
 import LoginView from '@/views/LoginView.vue'
+import UsuariosView from '@/views/UsuariosView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import { PATH_PAGE_HOME, PATH_PAGE_LOGIN } from './routes'
+import { PATH_PAGE_HOME, PATH_PAGE_LOGIN, PATH_PAGE_USERS } from './routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
           name: 'home',
           component: HomeView,
         },
+        {
+          path: PATH_PAGE_USERS,
+          name: 'usuarios',
+          component: UsuariosView,
+        },
       ],
     },
     {
@@ -26,6 +32,7 @@ const router = createRouter({
       name: 'login',
       component: LoginView,
     },
+
     // {
     //   path: '/about',
     //   name: 'about',

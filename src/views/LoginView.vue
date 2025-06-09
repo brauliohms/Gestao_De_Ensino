@@ -2,6 +2,9 @@
 import { fakeSendSuccess } from '@/lib/fakeSendSucess'
 import { IconEye, IconEyeOff, IconLoader2, IconLock, IconMail } from '@tabler/icons-vue'
 import { ref } from 'vue'
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
 const isLoading = ref(false)
 const isVisiblePassword = ref(false)
 const email = ref('')
@@ -10,12 +13,12 @@ const pass = ref('')
 async function login() {
   isLoading.value = true
   if (email.value !== 'usuario@email.com' || pass.value !== '123456') {
-    alert('Usuário ou senha incorreto!')
+    toast.error('Usuário ou senha incorreto!')
     isLoading.value = false
     return
   }
   await fakeSendSuccess('Autenticado com sucesso', 3000)
-  alert('Autenticado com sucesso')
+  toast.success('Autenticado com sucesso')
   isLoading.value = false
   return
   // const response = await fetch('https://jsonplaceholder.org/users')
@@ -44,6 +47,7 @@ async function login() {
                 type="email"
                 name="email"
                 id="email"
+                autofocus
                 autocomplete="email"
                 placeholder="Digite seu e-mail"
                 required
@@ -73,6 +77,7 @@ async function login() {
               </div>
               <!-- TODO: adicionar logica para visualizar a senha/esconder senha :type="isVisiblePassword ? 'text' : 'password'" -->
               <input
+                @keyup.enter="login()"
                 v-model="pass"
                 :type="isVisiblePassword ? 'text' : 'password'"
                 name="password"
@@ -101,6 +106,7 @@ async function login() {
             id="btn-submit"
             class="font-semibold inline-flex items-center justify-center py-1.5 sm:py-1.5 px-3.5 sm:px-4 transition-all duration-200 text-center cursor-pointer bg-green-600 hover:bg-green-500 text-white shadow-xs rounded-md text-sm sm:text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 w-full"
             @click="login()"
+            @keyup.enter="login()"
           >
             <IconLoader2 class="animate-spin" v-if="isLoading" />
             <span v-else>Entrar</span>

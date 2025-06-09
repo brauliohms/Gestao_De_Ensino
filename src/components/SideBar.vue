@@ -16,14 +16,15 @@ import avatarUrl from '@/assets/images/tabler_avatar_examplo.png'
             <RouterLink to="/" class="block px-4 py-2 rounded hover:bg-gray-700"> Home </RouterLink>
           </li>
           <li>
-            <RouterLink to="/home" class="block px-4 py-2 rounded hover:bg-gray-700">
-              Home
+            <RouterLink
+              :to="{ name: 'usuarios' }"
+              class="block px-4 py-2 rounded hover:bg-gray-700"
+            >
+              Usuários
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/home" class="block px-4 py-2 rounded hover:bg-gray-700">
-              Home
-            </RouterLink>
+            <a href="/usuarios" class="block px-4 py-2 rounded hover:bg-gray-700">Usuários-a</a>
           </li>
         </ul>
       </nav>
