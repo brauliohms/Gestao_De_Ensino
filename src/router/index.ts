@@ -3,6 +3,7 @@ import LoginView from '@/views/LoginView.vue'
 import UsuariosView from '@/views/UsuariosView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { authGuard, redirectIfAuthenticated } from './auth.guard'
 import { PATH_PAGE_HOME, PATH_PAGE_LOGIN, PATH_PAGE_USERS } from './routes'
 
 const router = createRouter({
@@ -14,6 +15,7 @@ const router = createRouter({
       path: '/',
       name: 'default',
       component: DefaultLayout,
+      beforeEnter: authGuard,
       children: [
         {
           path: PATH_PAGE_HOME,
@@ -31,6 +33,7 @@ const router = createRouter({
       path: PATH_PAGE_LOGIN,
       name: 'login',
       component: LoginView,
+      beforeEnter: redirectIfAuthenticated,
     },
 
     // {

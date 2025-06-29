@@ -1,5 +1,5 @@
-import process from 'node:process'
 import { defineConfig, devices } from '@playwright/test'
+import process from 'node:process'
 
 /**
  * Read environment variables from file.
@@ -14,6 +14,7 @@ export default defineConfig({
   testDir: './e2e',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
+  fullyParallel: false,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
