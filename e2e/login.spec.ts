@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
-test('faz login com credenciais válidas', async ({ page }) => {
+test('faz login com credenciais válidas e redireciona para a home', async ({ page }) => {
   await page.goto('/login')
 
   // Preenche o email e senha
@@ -10,14 +10,13 @@ test('faz login com credenciais válidas', async ({ page }) => {
   // Clica no botão "Entrar"
   await page.locator('#btn-submit').click()
 
-  // Espera o alert com sucesso
-  page.once('dialog', async (dialog) => {
-    expect(dialog.message()).toContain('Autenticado com sucesso')
-    await dialog.dismiss() // fecha o alert
-  })
+  // Em vez de esperar por um 'dialog', esperamos que a URL mude para a da home
+  // ou que um elemento específico da home apareça.
+  await expect(page).toHaveURL('/')
+  await expect(page.locator('h1')).toHaveText('Home Page')
 })
 
-test('mostra erro com credenciais inválidas', async ({ page }) => {
+test('mostra erro no toast com credenciais inválidas', async ({ page }) => {
   await page.goto('/login')
 
   await page.locator('#email').fill('errado@email.com')
@@ -25,8 +24,12 @@ test('mostra erro com credenciais inválidas', async ({ page }) => {
 
   await page.locator('#btn-submit').click()
 
-  page.once('dialog', async (dialog) => {
-    expect(dialog.message()).toContain('Usuário ou senha incorreto')
-    await dialog.dismiss()
-  })
+  // Esperamos que o elemento do toast de erro apareça e tenha o texto correto.
+  const errorToast = page.locator('.Vue-Toastification__toast--error')
+  await expect(errorToast).toBeVisible()
+  const msg = await errorToast.textContent()
+  expect(msg).toContain('E-mail ou senha inválidos') // Verifica se a mensagem de erro está correta
+
+  // Verifica que a página não redirecionou
+  await expect(page).toHaveURL('/login')
 })

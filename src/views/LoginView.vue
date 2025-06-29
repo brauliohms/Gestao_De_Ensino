@@ -1,29 +1,44 @@
 <script setup lang="ts">
-import { fakeSendSuccess } from '@/lib/fakeSendSucess'
+import { useSanitizer } from '@/composables/useSanitizer'
+import router from '@/router'
+import { useAuthStore } from '@/stores/auth.store'
 import { IconEye, IconEyeOff, IconLoader2, IconLock, IconMail } from '@tabler/icons-vue'
 import { ref } from 'vue'
 import { useToast } from 'vue-toastification'
 
+const { sanitize } = useSanitizer()
 const toast = useToast()
 const isLoading = ref(false)
 const isVisiblePassword = ref(false)
 const email = ref('')
 const pass = ref('')
+const authStore = useAuthStore()
 
 async function login() {
   isLoading.value = true
-  if (email.value !== 'usuario@email.com' || pass.value !== '123456') {
-    toast.error('Usuário ou senha incorreto!')
-    isLoading.value = false
+  try {
+    const sanitizedEmail = sanitize('email', email.value, {
+      toLowerCase: true,
+      maxLength: 155,
+      removeEmojis: true,
+      allowSpecialChars: false,
+    })
+    const sanitizedPassword = sanitize('password', pass.value, {
+      maxLength: 64,
+    })
+    await authStore.login({
+      email: sanitizedEmail.sanitizedValue,
+      password: sanitizedPassword.sanitizedValue,
+    })
+    await router.push({ name: 'home' })
     return
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : 'Erro ao autenticar')
+    console.error('Login error:', error)
+    return
+  } finally {
+    isLoading.value = false
   }
-  await fakeSendSuccess('Autenticado com sucesso', 3000)
-  toast.success('Autenticado com sucesso')
-  isLoading.value = false
-  return
-  // const response = await fetch('https://jsonplaceholder.org/users')
-  // const users = await response.json()
-  // console.log(users)
 }
 </script>
 
